@@ -63,7 +63,6 @@
 
     const ua = navigator.userAgent.toLowerCase();
     let browser = "不明なブラウザ";
-    addLine(`ブラウザ:${browser}`);
     if (ua.includes("edg/")) {
         browser = "Microsoft Edge";
     } else if (ua.includes("chrome/")) {
@@ -79,8 +78,6 @@
     
     const platform = navigator.platform.toLowerCase();
     let device = "不明なデバイス";
-    addLine(`デバイス:${device}`);
-
     if (ua.includes("iphone")) {
         device = "iPhone";
     } else if (ua.includes("ipad")) {
