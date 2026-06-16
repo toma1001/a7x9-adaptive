@@ -1,24 +1,101 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="robots" content="noindex, nofollow">
-  <title>a7x9 adaptive</title>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>a7x9 adaptive</title>
+
+    <style>
+        #result {
+            white-space: pre-line;
+        }
+    </style>
+
 </head>
 <body>
-  <h1 id="result">Checking...</h1>
+    <h1 id="result">Checking...</h1>
 
-  <script>
+    <script>
     "use strict";
+
+    function addLine(text) {
+    result.textContent += text + "\n";
+    }
 
     const result = document.getElementById("result");
     const hour = new Date().getHours();
+    addLine(`時間:${hour}時`);
 
-    if (hour >= 0 && hour < 5) {
-      result.textContent = "深夜判定。今は閉鎖中(嘘)";
+    const day = new Date().getDay();
+    const daynames = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
+    const dayname = daynames[day];
+    addLine(`曜日:${dayname}`);
+    if (day === 0 || day === 6) {
+        addLine("休日");
     } else {
-      result.textContent = "通常時間です。"
+        addLine("平日");
     }
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    if (width < 600) {
+        addLine("画面サイズ:小");
+    } else if (width < 1000) {
+        addLine("画面サイズ:中");
+    } else {
+        addLine("画面サイズ:大");
+    }
+
+    if (width > height) {
+        addLine("画面の向き:横");
+    } else {
+        addLine("画面の向き:縦");
+    }
+
+    const touchPoints = navigator.maxTouchPoints || 0;
+    if (touchPoints > 0) {
+        addLine("タッチ対応:あり");
+    } else {
+        addLine("タッチ対応:なし");
+    }
+
+    const ua = navigator.userAgent.toLowerCase();
+    let browser = "不明なブラウザ";
+    addLine(`ブラウザ:${browser}`);
+    if (ua.includes("edg/")) {
+        browser = "Microsoft Edge";
+    } else if (ua.includes("chrome/")) {
+        browser = "Google Chrome";
+    } else if (ua.includes("safari/") && !ua.includes("chrome/")) {
+        browser = "Safari";
+    } else if (ua.includes("firefox/")) {
+        browser = "Mozilla Firefox";
+    } else if (ua.includes("opera/") || ua.includes("opr/")) {
+        browser = "Opera";
+    }
+    addLine(`ブラウザ:${browser}`);
+    
+    const platform = navigator.platform.toLowerCase();
+    let device = "不明なデバイス";
+    addLine(`デバイス:${device}`);
+
+    if (ua.includes("iphone")) {
+        device = "iPhone";
+    } else if (ua.includes("ipad")) {
+        device = "iPad";
+    } else if (ua.includes("android")) {
+        device = "Android";
+    } else if (ua.includes("macintosh") && touchPoints > 1) {
+        device = "iPad";
+    } else if (ua.includes("windows")) {
+        device = "Windows";
+    } else if (ua.includes("macintosh") || platform.includes("mac")) {
+        device = "Mac";
+    } else if (ua.includes("linux")) {
+        device = "Linux";
+    }
+    addLine(`デバイス:${device}`);
   </script>
 </body>
 </html>
