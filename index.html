@@ -6,10 +6,19 @@
   <title>a7x9 adaptive</title>
 </head>
 <body>
-  <h1>Checking...</h1>
+  <h1 id="result">Checking...</h1>
 
   <script>
     "use strict";
+
+    const result = document.getElementById("result");
+    const hour = new Date().getHours();
+
+    if (hour >= 0 && hour < 5) {
+      result.textContent = "深夜判定。今は閉鎖中(嘘)";
+    } else {
+      result.textContent = "通常時間です。"
+    }
   </script>
 </body>
 </html>
