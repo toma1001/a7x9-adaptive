@@ -14,7 +14,7 @@
 
 </head>
 <body>
-    <h1 id="result">Checking...<br></h1>
+    <h1 id="result"></h1>
 
     <script>
     "use strict";
@@ -22,8 +22,9 @@
     function addLine(text) {
     result.textContent += text + "\n";
     }
-
     const result = document.getElementById("result");
+    addLine("Checking...");
+
     const hour = new Date().getHours();
     addLine(`時間:${hour}時`);
 
