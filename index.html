@@ -170,7 +170,7 @@
 
         addLine(`安全な接続:${location.protocol === "https:" ? "はい" : "いいえ"}`);
 
-        addLine(`参照元:${document.refrrer || "なし"}`);
+        addLine(`参照元:${document.referrer || "なし"}`);
         addLine(`読み込みからの経過時間:${Math.round(performance.now())}ms`);
     }
 
