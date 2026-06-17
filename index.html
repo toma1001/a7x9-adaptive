@@ -25,6 +25,10 @@
     result.textContent += text + "\n";
     }
 
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     async function main() {
         addLine("Checking...");
 
@@ -170,7 +174,24 @@
         addLine(`読み込みからの経過時間:${Math.round(performance.now())}ms`);
     }
 
-    main();
+    async function redirect() {
+        let countDown = 3
+        for (let i = 0; i < 4; i++) {
+            result.textContent = `精々頑張ってね〜(${countDown - i})`;
+            await sleep(1000);
+        }
+
+        location.replace("https://www.nnn.ed.nico/courses/623/");
+    }
+
+    const params = new URLSearchParams(location.search);
+    const mode = params.get("mode");
+
+    if (mode === "redirect") {
+        redirect();
+    } else {
+        main();
+    }
   </script>
 </body>
 </html>
