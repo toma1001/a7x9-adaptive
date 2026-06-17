@@ -19,88 +19,158 @@
     <script>
     "use strict";
 
+    const result = document.getElementById("result");
+
     function addLine(text) {
     result.textContent += text + "\n";
     }
-    const result = document.getElementById("result");
-    addLine("Checking...");
 
-    const hour = new Date().getHours();
-    addLine(`時間:${hour}時`);
+    async function main() {
+        addLine("Checking...");
 
-    const day = new Date().getDay();
-    const daynames = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
-    const dayname = daynames[day];
-    addLine(`曜日:${dayname}`);
-    if (day === 0 || day === 6) {
-        addLine("休日");
-    } else {
-        addLine("平日");
+        const hour = new Date().getHours();
+        addLine(`時間:${hour}時`);
+
+        const day = new Date().getDay();
+        const daynames = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
+        const dayname = daynames[day];
+        addLine(`曜日:${dayname}`);
+        if (day === 0 || day === 6) {
+            addLine("休日");
+        } else {
+            addLine("平日");
+        }
+
+        const innerWidth = window.innerWidth;
+        const innerHeight = window.innerHeight;
+        
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+
+        const longSide = Math.max(innerWidth, innerHeight);
+        const shortSide = Math.min(innerWidth, innerHeight);
+
+        addLine(`利用できるウィンドウサイズ: ${innerWidth}px × ${innerHeight}px`);
+        addLine(`画面サイズ: ${screenWidth}px × ${screenHeight}px`);
+        addLine(`色深度:${window.screen.colorDepth}bit`);
+        addLine(`デバイスピクセル比:${window.devicePixelRatio}`);
+
+        const physicalWidth = Math.round(screenWidth * window.devicePixelRatio);
+        const physicalHeight = Math.round(screenHeight * window.devicePixelRatio);
+        addLine(`推定物理ピクセル数: ${physicalWidth}px × ${physicalHeight}px`);
+
+        if (innerWidth > innerHeight) {
+            addLine("画面の向き:横");
+        } else {
+            addLine("画面の向き:縦");
+            
+        }
+
+        const touchPoints = navigator.maxTouchPoints || 0;
+        if (touchPoints > 0) {
+            addLine("タッチ対応:あり");
+        } else {
+            addLine("タッチ対応:なし");
+        }
+
+        const ua = navigator.userAgent.toLowerCase();
+        addLine(`ユーザーエージェント:${ua}`);
+        let browser = "不明なブラウザ";
+        if (ua.includes("edg/") || ua.includes("edgios")) {
+            browser = "Microsoft Edge";
+        } else if (ua.includes("firefox/") || ua.includes("fxios")) {
+            browser = "Mozilla Firefox";
+        } else if (ua.includes("opera/") || ua.includes("opr/") || ua.includes("opios")) {
+            browser = "Opera";
+        } else if (ua.includes("chrome/") || ua.includes("crios/")) {
+            browser = "Google Chrome";
+        } else if (ua.includes("safari/") && !ua.includes("chrome/")) {
+            browser = "Safari";
+        }
+        addLine(`ブラウザ:${browser}`);
+        
+        const platform = navigator.platform.toLowerCase();
+        let device = "不明なデバイス";
+        if (ua.includes("iphone")) {
+            device = "iPhone";
+        } else if (ua.includes("ipad")) {
+            device = "iPad";
+        } else if (ua.includes("android")) {
+            device = "Android";
+        } else if (ua.includes("macintosh") && touchPoints > 1) {
+            device = "iPad";
+        } else if (ua.includes("windows")) {
+            device = "Windows";
+        } else if (ua.includes("macintosh") || platform.includes("mac")) {
+            device = "Mac";
+        } else if (ua.includes("linux")) {
+            device = "Linux";
+        }
+        addLine(`デバイス:${device}`);
+
+        if (typeof navigator.getBattery === "function") {
+            const battery = await navigator.getBattery();
+            const batteryLevel = Math.round(battery.level * 100);
+            const isCharging = battery.charging
+            addLine(`バッテリー残量:${batteryLevel}%`);
+
+            addLine(`充電状態:${isCharging ? "充電中" : "放電中"}`);
+        } else {
+            addLine("バッテリー情報:取得不可");
+        }
+
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            addLine("表示モード:ダークモード");
+        } else {
+            addLine("表示モード:ライトモード");
+        }
+        
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        addLine(`タイムゾーン:${timeZone}`);
+
+        addLine(`ページURL:${location.href}`);
+        addLine(`ホスト名:${location.hostname}`);
+        addLine(`プロトコル:${location.protocol}`);
+
+        const port = location.port || (location.protocol === "https:" ? "443" : "80");
+        addLine(`ポート:${port}`);
+        
+        if (navigator.connection) {
+            addLine(`推定通信タイプ:${navigator.connection.effectiveType || "不明"}`);
+            addLine(`推定下り速度:${navigator.connection.downlink || "不明"}Mbps`);
+            addLine(`データ節約モード:${navigator.connection.saveData ? "あり" : "なし"}`);
+        } else {
+            addLine("通信情報:取得不可");
+        }
+
+        addLine(`Cookie有効:${navigator.cookieEnabled ? "あり" : "なし"}`);
+        try {
+            localStorage.setItem("test", "ok");
+            localStorage.removeItem("test");
+            addLine("localStorage:利用可能");
+        } catch (e) {
+            addLine("localStorage:利用不可");
+        }
+        addLine(`ブラウザ言語:${navigator.language}`);
+        addLine(`利用可能な言語:${navigator.languages ? navigator.languages.join(", ") : "取得不可"}`);
+
+        addLine(`CPU論理コア数:${navigator.hardwareConcurrency || "取得不可"}`);
+        addLine(`推定メモリ容量:${navigator.deviceMemory ? navigator.deviceMemory + "GB" : "取得不可"}`);
+
+        if (screen.orientation) {
+            addLine(`画面本体の向き:${screen.orientation.type}`);
+            addLine(`画面本体の回転角度:${screen.orientation.angle}度`);
+        } else {
+            addLine("画面方向情報:取得不可");
+        }
+
+        addLine(`安全な接続:${location.protocol === "https" ? "はい" : "いいえ"}`);
+
+        addLine(`参照元:${document.refrrer || "なし"}`);
+        addLine(`読み込みからの経過時間:${Math.round(performance.now())}ms`);
     }
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    const longSide = Math.max(width, height);
-    const shortSide = Math.min(width, height);
-
-    addLine(`画面サイズ: ${longSide}px × ${shortSide}px`);
-
-    if (shortSide < 600) {
-        addLine("画面解像度:低");
-    } else if (shortSide < 1000) {
-        addLine("画面解像度:中");
-    } else {
-        addLine("画面解像度:高");
-    }
-
-    if (width > height) {
-        addLine("画面の向き:横");
-    } else {
-        addLine("画面の向き:縦");
-    }
-
-    const touchPoints = navigator.maxTouchPoints || 0;
-    if (touchPoints > 0) {
-        addLine("タッチ対応:あり");
-    } else {
-        addLine("タッチ対応:なし");
-    }
-
-    const ua = navigator.userAgent.toLowerCase();
-    addLine(`ユーザーエージェント:${ua}`);
-    let browser = "不明なブラウザ";
-    if (ua.includes("edg/") || ua.includes("edgios")) {
-        browser = "Microsoft Edge";
-    } else if (ua.includes("firefox/") || ua.includes("fxios")) {
-        browser = "Mozilla Firefox";
-    } else if (ua.includes("opera/") || ua.includes("opr/") || ua.includes("opios")) {
-        browser = "Opera";
-    } else if (ua.includes("chrome/") || ua.includes("crios/")) {
-        browser = "Google Chrome";
-    } else if (ua.includes("safari/") && !ua.includes("chrome/")) {
-        browser = "Safari";
-    }
-    addLine(`ブラウザ:${browser}`);
-    
-    const platform = navigator.platform.toLowerCase();
-    let device = "不明なデバイス";
-    if (ua.includes("iphone")) {
-        device = "iPhone";
-    } else if (ua.includes("ipad")) {
-        device = "iPad";
-    } else if (ua.includes("android")) {
-        device = "Android";
-    } else if (ua.includes("macintosh") && touchPoints > 1) {
-        device = "iPad";
-    } else if (ua.includes("windows")) {
-        device = "Windows";
-    } else if (ua.includes("macintosh") || platform.includes("mac")) {
-        device = "Mac";
-    } else if (ua.includes("linux")) {
-        device = "Linux";
-    }
-    addLine(`デバイス:${device}`);
+    main();
   </script>
 </body>
 </html>
