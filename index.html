@@ -40,12 +40,18 @@
 
     const width = window.innerWidth;
     const height = window.innerHeight;
-    if (width < 600) {
-        addLine("画面サイズ:小");
-    } else if (width < 1000) {
-        addLine("画面サイズ:中");
+
+    const longSide = Math.max(width, height);
+    const shortSide = Math.min(width, height);
+
+    addLine(`画面サイズ: ${longSide}px × ${shortSide}px`);
+
+    if (shortSide < 600) {
+        addLine("画面解像度:低");
+    } else if (shortSide < 1000) {
+        addLine("画面解像度:中");
     } else {
-        addLine("画面サイズ:大");
+        addLine("画面解像度:高");
     }
 
     if (width > height) {
@@ -62,17 +68,18 @@
     }
 
     const ua = navigator.userAgent.toLowerCase();
+    addLine(`ユーザーエージェント:${ua}`);
     let browser = "不明なブラウザ";
-    if (ua.includes("edg/")) {
+    if (ua.includes("edg/") || ua.includes("edgios")) {
         browser = "Microsoft Edge";
-    } else if (ua.includes("chrome/")) {
+    } else if (ua.includes("firefox/") || ua.includes("fxios")) {
+        browser = "Mozilla Firefox";
+    } else if (ua.includes("opera/") || ua.includes("opr/") || ua.includes("opios")) {
+        browser = "Opera";
+    } else if (ua.includes("chrome/") || ua.includes("crios/")) {
         browser = "Google Chrome";
     } else if (ua.includes("safari/") && !ua.includes("chrome/")) {
         browser = "Safari";
-    } else if (ua.includes("firefox/")) {
-        browser = "Mozilla Firefox";
-    } else if (ua.includes("opera/") || ua.includes("opr/")) {
-        browser = "Opera";
     }
     addLine(`ブラウザ:${browser}`);
     
